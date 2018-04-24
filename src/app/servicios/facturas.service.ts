@@ -4,17 +4,14 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
-import { AutenticacionService } from './autenticacion.service';
 
 @Injectable()
-export class ProveedoresService {
+export class FacturasService {
 
-  token:string;
+  constructor(private http: HttpClient) { }
 
-  constructor(private http: HttpClient, private autenticacionService: AutenticacionService) {this.token = autenticacionService.token }
-
-  getProveedores(){
-    let url = 'http://localhost:3000/proveedor';
+  getFacturas(){
+    let url = 'http://localhost:3000/factura';
     return this.http.get(url)
                     .map((resp:any)=>{
                       return resp;
@@ -22,17 +19,17 @@ export class ProveedoresService {
 
   }
 
-  getProveedorId(id){
-    let url = 'http://localhost:3000/proveedor/'; //Le añadimos la barra al final para que pegue despues el id
+  getFacturaId(id){
+    let url = 'http://localhost:3000/factura/'; //Le añadimos la barra al final para que pegue despues el id
     return this.http.get(url + id)
                     .map((resp:any)=>{
                       return resp;
                     });
   }
 
-  postProveedor(proveedor){
-    let url = "http://localhost:3000/proveedor";
-    return this.http.post(url,proveedor)
+  postFactura(factura){
+    let url = "http://localhost:3000/factura";
+    return this.http.post(url,factura)
                     .map((resp:any)=>{
                       console.log(resp);
                       return resp;
@@ -40,17 +37,17 @@ export class ProveedoresService {
 
 }
 
-  putProveedor(id,proveedor){
-    let url = "http://localhost:3000/proveedor/";
-    return this.http.put(url+id, proveedor)
+  putFactura(id,factura){
+    let url = "http://localhost:3000/factura/";
+    return this.http.put(url+id, factura)
                     .map((resp:any)=>{
                       return resp;
                     });
   }
 
-  deleteProveedor(id){
-    let url = "http://localhost:3000/proveedor/" + id + "?token=" + this.token ;
-    return this.http.delete(url)
+  deleteFactura(id){
+    let url = "http://localhost:3000/factura/";
+    return this.http.delete(url+id)
                     .map((resp:any)=>{
                       return resp;
                     });

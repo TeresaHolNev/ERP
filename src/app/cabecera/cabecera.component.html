@@ -1,23 +1,20 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+<nav class="navbar navbar-expand-md  fixed-top navbar-light bg-light mb-4">
   <a class="navbar-brand" routerLink="/">ERP App</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+    aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarCollapse">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-        <a class="nav-link" routerLink="/">Inicio <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/ventas">Ventas</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/compras">Compras</a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/contabilidad">Contabilidad</a>
-      </li>
+      <div class="sesion">
+        <span *ngIf="getNombre()">
+          <i class="far fa-user"></i>{{nombre}}</span>
+        <button *ngIf="!getLogged()" class="btn btn-primary" routerLink="/registro">Registro</button>
+      </div>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <button *ngIf="!getLogged()" class="btn btn-primary" routerLink="/inicio-sesion">Iniciar sesión</button>
+      <button *ngIf="getLogged()" class="btn btn-primary" (click)="autenticacionService.logout()">Cerrar sesión</button>
     </ul>
   </div>
 </nav>
-
