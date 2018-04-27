@@ -1,0 +1,42 @@
+  <div class="col-md-12">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/inicio">Inicio</a>
+        </li>
+        <li class="breadcrumb-item">
+          <a routerLink="/listado-usuarios">Usuarios</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Listado de sesiones</li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="container titulo">
+    <span>Sesiones</span>
+    <button class="btn btn-primary" routerLink="/listado-usuarios">
+      Listado de usuarios
+    </button>
+  </div>
+
+  <div class="container">
+    <table class="table">
+      <tr>
+        <th>Nombre</th>
+        <th><i class="fas fa-sign-in-alt"></i> Login/Logout <i class="fas fa-sign-out-alt"></i></th>
+      </tr>
+      <tr *ngFor="let sesion of sesiones">
+        <td>{{sesion.nombre }}</td>
+        <td>
+          <span *ngIf="sesion.login">
+              <i class="fas fa-sign-in-alt valido"></i> 
+          {{sesion.login | date:' dd/MM/yy hh:mm'}}           
+          </span>
+          <span *ngIf="sesion.logout">
+          {{sesion.logout | date:' dd/MM/yy hh:mm'}}
+          <i class="fas fa-sign-out-alt no-valido"></i>
+          </span>
+        </td>
+      </tr>
+    </table>
+  </div>

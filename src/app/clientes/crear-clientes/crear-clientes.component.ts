@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ProveedoresService } from '../../servicios/proveedores.service';
+import { ClientesService } from '../../servicios/clientes.service';
 import { Router } from '@angular/router';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
-  selector: 'app-crear-prov',
-  templateUrl: './crear-prov.component.html',
-  styleUrls: ['./crear-prov.component.css'],
+  selector: 'app-crear-clientes',
+  templateUrl: './crear-clientes.component.html',
+  styleUrls: ['./crear-clientes.component.css'],
   animations: [
     trigger('alerta',[
       state('show', style({ opacity: 1})),
@@ -17,12 +17,12 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
     ])
   ]
 })
-export class CrearProvComponent implements OnInit {
+export class CrearClientesComponent implements OnInit {
 
   @ViewChild('cif') cifRef: ElementRef;
 
-  proveedorForm: FormGroup;
-  proveedor:any;
+  clienteForm: FormGroup;
+  cliente:any;
   provincias:string[] = [
     'Álava','Albacete','Alicante','Almería','Asturias','Ávila','Badajoz','Barcelona','Burgos','Cáceres',
     'Cádiz','Cantabria','Castellón','Ceuta','Ciudad Real','Córdoba','La Coruña','Cuenca','Gerona','Gibraltar','Granada','Guadalajara',
@@ -34,12 +34,12 @@ export class CrearProvComponent implements OnInit {
   mostrarAlerta:boolean = false;
   enviando:boolean = false;
 
-  constructor(private pf: FormBuilder,
-              private proveedoresService: ProveedoresService,
+  constructor(private cf: FormBuilder,
+              private clientesService: ClientesService,
               private router: Router) { }
 
   ngOnInit() {
-    this.proveedorForm = this.pf.group({
+    this.clienteForm = this.cf.group({
       nombre: null,
       cif: null,
       domicilio: null,
@@ -56,13 +56,13 @@ export class CrearProvComponent implements OnInit {
    return this.mostrarAlerta ? 'show' : 'hide';
  }
 
- crearProv(){
+ crearCliente(){
     this.mostrarAlerta = false;
     this.enviando = true;
-    this.proveedor = this.guardarProv();
-    this.proveedoresService.postProveedor(this.proveedor)
+    this.cliente = this.guardarCliente();
+    this.clientesService.postCliente(this.cliente)
                     .subscribe((resp:any)=>{
-                      this.router.navigate(['/listado-proveedores']);
+                      this.router.navigate(['/listado-clientes']);
                       this.enviando = false;
                     }, (error:any)=>{
                       this.mostrarAlerta = true;
@@ -73,20 +73,19 @@ export class CrearProvComponent implements OnInit {
                       }
                     });
   }
-  guardarProv(){
-    const guardarProv = {
-      nombre: this.proveedorForm.get('nombre').value,
-      cif: this.proveedorForm.get('cif').value,
-      domicilio: this.proveedorForm.get('domicilio').value,
-      cp: this.proveedorForm.get('cp').value,
-      localidad: this.proveedorForm.get('localidad').value,
-      provincia: this.proveedorForm.get('provincia').value,
-      telefono: this.proveedorForm.get('telefono').value,
-      email: this.proveedorForm.get('email').value,
-      contacto: this.proveedorForm.get('contacto').value
+  guardarCliente(){
+    const guardarCliente = {
+      nombre: this.clienteForm.get('nombre').value,
+      cif: this.clienteForm.get('cif').value,
+      domicilio: this.clienteForm.get('domicilio').value,
+      cp: this.clienteForm.get('cp').value,
+      localidad: this.clienteForm.get('localidad').value,
+      provincia: this.clienteForm.get('provincia').value,
+      telefono: this.clienteForm.get('telefono').value,
+      email: this.clienteForm.get('email').value,
+      contacto: this.clienteForm.get('contacto').value
     }
-    return guardarProv;
+    return guardarCliente;
   }
-
 
 }

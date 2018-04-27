@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AutenticacionService } from '../servicios/autenticacion.service';
+import { SesionService } from '../servicios/sesion.service';
+
 
 @Component({
   selector: 'app-cabecera',
@@ -8,9 +10,9 @@ import { AutenticacionService } from '../servicios/autenticacion.service';
 })
 export class CabeceraComponent implements OnInit {
 
-  nombre:string;
+  sesion:any;
 
-  constructor(private autenticacionService : AutenticacionService) { }
+  constructor(private autenticacionService: AutenticacionService,private sesionService: SesionService) { }
 
   ngOnInit() {
   }
@@ -19,10 +21,17 @@ export class CabeceraComponent implements OnInit {
     return this.autenticacionService.isLogged();
   }
 
-  getNombre(){
-    this.nombre = this.autenticacionService.nombre;
-    return this.nombre;
-    
+  cerrarSesion(){
+    this.sesion = {
+      nombre: this.autenticacionService.nombre,
+      logout: new Date
+    }
+    this.sesionService.postSesion(this.sesion)
+        .subscribe((res:any)=>{
+          console.log(res);
+        },error=>{
+          console.log(error);
+        })
   }
 
 }

@@ -1,10 +1,10 @@
 <div class="barra-fija">
-  <div title="Proveedores" 
-        routerLink="/listado-proveedores">
+  <div title="Clientes" 
+        routerLink="/listado-clientes">
       <i class="fas fa-address-book"></i>
   </div>
-  <div title="Facturas" 
-        routerLink="/listado-facturas">
+  <div title="Presupuestos" 
+        routerLink="/listado-presupuestos">
       <i class="fas fa-money-bill-alt"></i>
   </div>
 </div>
@@ -12,22 +12,22 @@
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a routerLink="/inicio">Inicio</a></li>
-      <li class="breadcrumb-item"><a routerLink="/compras">Compras</a></li>
-      <li class="breadcrumb-item"><a routerLink="/listado-proveedores">Proveedores</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Añadir proveedor</li>
+      <li class="breadcrumb-item"><a routerLink="/ventas">Ventas</a></li>
+      <li class="breadcrumb-item"><a routerLink="/listado-ventas">Clientes</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Añadir cliente</li>
     </ol>
   </nav>
 </div>
 <div class="col-md-12 titulo">
-  <span>Añadir nuevo proveedor</span>
+  <span>Añadir nuevo cliente</span>
   <button class="btn btn-primary"
-          routerLink="/listado-proveedores">
+          routerLink="/listado-clientes">
     <strong>Volver</strong>
   </button>
 </div>
 <div class="col-md-8 offset-md-2 col-12">
   <div class="formulario">
-    <form [formGroup]="proveedorForm" (ngSubmit)="crearProv()">
+    <form [formGroup]="clienteForm" (ngSubmit)="crearCliente()">
       <div class="form-group">
         <input type="text" class="form-control"
                 formControlName="nombre"
@@ -78,12 +78,12 @@
                 placeholder="Contacto">
       </div>
       <button type="submit" class="btn btn-primary">
-        <span *ngIf="!enviando">Añadir proveedor</span>
+        <span *ngIf="!enviando">Añadir cliente</span>
         <span *ngIf="enviando">
           <i class="fas fa-spinner fa-pulse"></i>
         </span>
       </button>
-      <button routerLink="/listado-proveedores" 
+      <button routerLink="/listado-clientes" 
               class="btn btn-danger">
           Cancelar
       </button>
@@ -92,5 +92,6 @@
        [@alerta]="estadoAlerta">{{mensaje}}</p>
   </div>
 </div>
+
 
 

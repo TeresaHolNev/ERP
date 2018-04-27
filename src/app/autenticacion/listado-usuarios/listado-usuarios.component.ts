@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AutenticacionService } from '../../servicios/autenticacion.service';
-import {FormGroup, FormControl, FormBuilder, Validators} from '@angular/forms';
-import { trigger, state, style, animate, transition} from '@angular/animations';
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 
 @Component({
   selector: 'app-listado-usuarios',
@@ -11,11 +11,11 @@ import { trigger, state, style, animate, transition} from '@angular/animations';
     trigger('formulario',[
       state('show', style({ 
         opacity: 1,
-        height:80
+        height: 80
       })),
       state('hide', style({ 
         opacity: 0,
-        height:20
+        height: 0
       })),
       transition('show => hide', animate('500ms ease-out')),
       transition('hide => show', animate('500ms ease-in'))
@@ -38,26 +38,26 @@ export class ListadoUsuariosComponent implements OnInit {
   mostrarFormulario:boolean = false;
   mostrarAlerta:boolean = false;
   enviando:boolean = false;
-  mensaje:string ="Error de conexión con el servidor"
+  mensaje:string = "Error de conexión al servidor";
   editarFila:string;
   id:string;
 
   constructor(private autenticacionService: AutenticacionService,
-              private cuf : FormBuilder,
-              private euf : FormBuilder) { }
+              private cuf: FormBuilder,
+              private euf: FormBuilder) { }
 
   ngOnInit() {
     this.cargarUsuarios();
     this.crearUsuarioForm = this.cuf.group({
-      nombre:[null, Validators.required],
-      email:[null, Validators.required],
-      password:[null, Validators.required],
-      rol:[null, Validators.required]
+      nombre: [null, Validators.required],
+      email: [null, Validators.required],
+      password: [null, Validators.required],
+      rol: [null, Validators.required]
     })
     this.editarUsuarioForm = this.euf.group({
-      nombre:[null, Validators.required],
-      email:[null, Validators.required],
-      rol:[null, Validators.required]
+      nombre: [null, Validators.required],
+      email: [null, Validators.required],
+      rol: [null, Validators.required]
     })
   }
 
@@ -65,7 +65,7 @@ export class ListadoUsuariosComponent implements OnInit {
     return this.mostrarFormulario ? 'show' : 'hide';
   }
 
-  get estadoAlerta(){
+  get estadoAlerta() {
     return this.mostrarAlerta ? 'show' : 'hide';
   }
 
@@ -75,50 +75,52 @@ export class ListadoUsuariosComponent implements OnInit {
 
   cargarUsuarios(){
     this.autenticacionService.getUsuarios()
-        .subscribe((res:any)=>{
-          this.usuarios = res.usuarios;
-        },(error)=>{
-          console.log(error);
-        });
-      }
+            .subscribe((res:any)=>{
+              this.usuarios = res.usuarios;
+            }, (error)=>{
+              console.log(error);
+            })
+  }
 
   crearUsuario(){
     this.enviando = true;
     this.nuevoUsuario = this.guardarNuevoUsuario();
     this.autenticacionService.postUsuario(this.nuevoUsuario)
-            .subscribe((res:any)=>{
-              this.enviando = false;
-              this.mostrarAlerta = true;
-              this.mensaje = 'Usuario creado correctamente';
-              this.crearUsuarioForm.reset();
-              this.cargarUsuarios();
-              setTimeout(()=>{
-                this.mostrarAlerta = false;
-              },2500)
-              setTimeout(()=>{
-                this.mensaje = "Error de conexión con el servidor";
-              },5000)
-            },(error:any)=>{
-              this.mostrarAlerta = true;
-              this.enviando = false;
-              if (error.error.errores.errors.email.message){
-                this.mensaje = error.error.errores.errors.email.message;
-              }
-              setTimeout(()=>{
-                this.mostrarAlerta = false;
-              },2500)
-              setTimeout(()=>{
-                this.mensaje = "Error de conexión con el servidor";
-              },5000)
-            });
-  }   
+                .subscribe((res:any)=>{
+                  this.enviando = false;
+                  this.mostrarAlerta = true;
+                  this.mensaje = 'Usuario creado correctamente';
+                  this.crearUsuarioForm.reset();
+                  this.cargarUsuarios();
+                  setTimeout(()=>{
+                    this.mostrarAlerta = false;
+                  }, 2500)                  
+                  setTimeout(()=>{
+                    this.mensaje = "Error de conexión al servidor";
+                  }, 5000)
+
+                },(error:any)=>{
+                  this.mostrarAlerta = true;
+                  this.enviando = false;
+                  if(error.error.errores.errors.email.message){
+                    this.mensaje = error.error.errores.errors.email.message;
+                  }
+                  setTimeout(()=>{
+                    this.mostrarAlerta = false;
+                  }, 2500)                  
+                  setTimeout(()=>{
+                    this.mensaje = "Error de conexión al servidor";
+                  }, 5000)
+
+                })
+  }
 
   guardarNuevoUsuario(){
     const guardarNuevoUsuario = {
       nombre: this.crearUsuarioForm.get('nombre').value,
-      email: this.crearUsuarioForm.get('email').value,//.toLowerCase(),
+      email: this.crearUsuarioForm.get('email').value.toLowerCase(),
       password: this.crearUsuarioForm.get('password').value,
-      rol: this.crearUsuarioForm.get('rol').value,
+      rol: this.crearUsuarioForm.get('rol').value
     }
 
     return guardarNuevoUsuario;
@@ -135,39 +137,37 @@ export class ListadoUsuariosComponent implements OnInit {
 
   editarUsuario(id){
     this.enviando = true;
-    this.usuario = this.guardarUsuarioEditado(); 
-    this.autenticacionService.putUsuario(id, this.usuario)
-              .subscribe((res:any)=>{
-                this.enviando = false;
-                this.mostrarAlerta = true;
-                this.mensaje = 'Usuario modificado correctamente';
-                this.editarFila = '';
-                this.cargarUsuarios();
-                setTimeout(()=>{
-                  this.mostrarAlerta = false;
-                },2500)
-                setTimeout(()=>{
-                  this.mensaje = "Error de conexión con el servidor";
-                },5000)
-
-              },(error:any)=>{
-                this.mostrarAlerta = true;
-                this.enviando = false;
-                setTimeout(()=>{
-                  this.mostrarAlerta = false;
-                },2500)
-              });
+    this.usuario = this.guardarUsuarioEditado();
+    this.autenticacionService.putUsuario(id,this.usuario)
+                        .subscribe((res:any)=>{
+                          this.enviando = false;
+                          this.mostrarAlerta = true;
+                          this.mensaje = 'Usuario actualizado correctamente';
+                          this.editarFila = '';
+                          this.cargarUsuarios();
+                          setTimeout(()=>{
+                            this.mostrarAlerta = false;
+                          }, 2500)                  
+                        },(error:any)=>{
+                          this.mostrarAlerta = true;
+                          this.enviando = false;
+                          if(error.error.errores.errors.email.message){
+                            this.mensaje = error.error.errores.errors.email.message;
+                          }
+                          setTimeout(()=>{
+                            this.mostrarAlerta = false;
+                          }, 2500)                  
+                        })
     setTimeout(()=>{
-      this.mensaje = "Error de conexión con el servidor";
-    },5000)
-  
+      this.mensaje = "Error de conexión al servidor";
+    }, 3000)
   }
 
   guardarUsuarioEditado(){
     const guardarUsuarioEditado = {
-      nombre:this.editarUsuarioForm.get('nombre').value,
-      email:this.editarUsuarioForm.get('email').value,//.toLowerCase(),
-      rol:this.editarUsuarioForm.get('rol').value,
+      nombre: this.editarUsuarioForm.get('nombre').value,
+      email: this.editarUsuarioForm.get('email').value.toLowerCase(),
+      rol: this.editarUsuarioForm.get('rol').value,
     }
     return guardarUsuarioEditado;
   }
@@ -178,27 +178,25 @@ export class ListadoUsuariosComponent implements OnInit {
 
   borrarUsuario(){
     this.enviando = true;
-    this.autenticacionService.deleteUsusario(this.id)
-                .subscribe((res:any)=>{
-                  this.enviando = false;
-                  this.mostrarAlerta = true;
-                  this.mensaje = 'Usuario eliminado correctamente';
-                  this.cargarUsuarios();
-                  setTimeout(()=>{
-                    this.mostrarAlerta = false;
-                  },2500)
-                  setTimeout(()=>{
-                    this.mensaje = "Error de conexión con el servidor";
-                  },5000)
-
-                },(error:any)=>{
-                  this.mostrarAlerta = true;
-                  this.enviando = false;
-                  setTimeout(()=>{
-                    this.mostrarAlerta = false;
-                  },2500)
-                });
+    this.autenticacionService.deleteUsuario(this.id)
+                        .subscribe((res:any)=>{
+                          this.enviando = false;
+                          this.mostrarAlerta = true;
+                          this.mensaje = 'Usuario eliminado correctamente';
+                          this.cargarUsuarios();
+                          setTimeout(()=>{
+                            this.mostrarAlerta = false;
+                          }, 2500)                  
+                        },(error:any)=>{
+                          this.mostrarAlerta = true;
+                          this.enviando = false;
+                          setTimeout(()=>{
+                            this.mostrarAlerta = false;
+                          }, 2500)                  
+                        })
+    setTimeout(()=>{
+      this.mensaje = "Error de conexión al servidor";
+    }, 3000)                    
   }
-  
-}
 
+}

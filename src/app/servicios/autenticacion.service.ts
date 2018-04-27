@@ -8,123 +8,124 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class AutenticacionService {
-  
-  
-  static nombre: string;
+  id: string;
 
   token:string;
-  nombre: string;
-  rol: string;
+  nombre:string;
+  rol:string;
+  ultimoLogin:any;
 
-  constructor(private http: HttpClient,private router: Router) {
-    this.cargarCredenciales()
+  constructor(private http: HttpClient,
+              private router: Router) {
+    this.cargarCredenciales();
    }
 
-
-   login(usuario){
-    let url = "http://localhost:3000/login";
-    return this.http.post(url,usuario)
-                    .map((resp:any)=>{
-                      this.guardarcredenciales(resp.token,resp.nombre, resp.rol);
-                      return resp;
-                    });
-  }
-
-   getUsuarios(){
+  getUsuarios(){
     let url = 'http://localhost:3000/usuario';
     return this.http.get(url)
-                    .map((resp:any)=>{
-                      return resp;
-                    });
-
+                  .map( (resp:any) => {
+                    return resp;
+                  });
   }
 
   postUsuario(usuario){
     let url = "http://localhost:3000/usuario";
-    return this.http.post(url,usuario)
-                    .map((resp:any)=>{
-                      return resp;
-                    });
+    return this.http.post(url, usuario)
+                  .map( (resp:any) => {
+                    return resp;
+                  });
   }
 
   putUsuario(id, usuario){
     let url = "http://localhost:3000/usuario/";
     return this.http.put(url+id, usuario)
-                .map((resp:any)=>{
-                  return resp;
-                });
+                      .map( (resp:any) => {
+                        return resp;
+                      });
   }
 
-  deleteUsusario(id){
-    let url = "http://localhost:3000/usuario/";
+  deleteUsuario(id){
+    let url = 'http://localhost:3000/usuario/';
     return this.http.delete(url+id)
-                    .map((resp:any)=>{
+                    .map( (resp:any) => {
                       return resp;
                     });
   }
 
-guardarcredenciales(token,nombre,rol){
-  localStorage.setItem('token',token);
-  localStorage.setItem('nombre',nombre);  
-  localStorage.setItem('rol',rol);  
-  this.token = token;
-  this.nombre = nombre;
-  this.rol = rol;
-}
 
-cargarCredenciales(){
-  if(localStorage.getItem('token')){
-    this.token = localStorage.getItem('token');
-    this.nombre = localStorage.getItem('nombre');
-    this.rol = localStorage.getItem('rol');    
-    
-  }else{
+  login(usuario){
+    let url = "http://localhost:3000/login";
+    return this.http.post(url, usuario)
+                  .map( (resp:any) => {
+                    this.guardarCredenciales(resp.token, resp.nombre, resp.rol);
+                    this.ultimoLogin = new Date();
+                    return resp;
+                  });
+  }
+
+  guardarCredenciales(token, nombre, rol){
+    localStorage.setItem('token',token);
+    localStorage.setItem('nombre',nombre);
+    localStorage.setItem('rol',rol);
+    this.token = token;
+    this.nombre = nombre;
+    this.rol = rol;
+  }
+
+  cargarCredenciales(){
+    if(localStorage.getItem('token')){
+      this.token = localStorage.getItem('token');
+      this.nombre = localStorage.getItem('nombre');
+      this.rol = localStorage.getItem('rol');
+      this.id = localStorage.getItem('id');
+    } else {
+      this.token = '';
+      this.nombre = '';
+      this.rol = '';
+    }
+  }
+
+  isLogged(){
+    return ( this.token.length > 0 ) ? true : false;
+  }
+
+  logout(){
+    localStorage.removeItem('token');
+    localStorage.removeItem('nombre');
+    localStorage.removeItem('rol');
+    localStorage.removeItem('id');
     this.token = '';
     this.nombre = '';
     this.rol = '';
+    this.router.navigate(['/']);
   }
-}
 
-isLogged(){
-  return ( this.token.length > 0 ) ? true : false;
-}
-
-logout(){
-  localStorage.removeItem('token');
-  localStorage.removeItem('nombre'); 
-  localStorage.removeItem('rol');     
-  this.token = '';
-  this.nombre = '';
-  this.rol = '';
-  this.router.navigate(['/']);
-}
-
-getPermLisUsuarios(){
-  if(this.rol === 'Administrador'){
-    return true
-  }else{
-    return false;
-  }
-}
-
-getPermCompras(){
-if(this.rol === 'Administrador' ||
-    this.rol === 'Director de compras' ||
-    this.rol === 'Empleado de compras'){
+  getPermLisUsuarios(){
+    if(this.rol === 'Administrador'){
       return true
-    }else{
+    } else {
       return false;
     }
-}
+  }
 
-getPermProveedores(){
-  if(this.rol === 'Administrador' ||
-    this.rol === 'Director de compras'){
-      return true
-    }else{
+  getPermCompras(){
+    if(this.rol === 'Administrador' ||
+       this.rol === 'Director de Compras' ||
+       this.rol === 'Empleado de Compras'){
+        return true;
+    } else {
       return false;
     }
-}
+  }
+
+  getPermProveedores(){
+    if(this.rol === 'Administrador' ||
+    this.rol === 'Director de Compras'){
+     return true;
+    } else {
+      return false;
+    }
+  }
 
 
 }

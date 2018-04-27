@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProveedoresService } from '../../servicios/proveedores.service';
-import { trigger, state, style, animate, transition} from '@angular/animations';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import { AutenticacionService } from '../../servicios/autenticacion.service';
 
 @Component({
@@ -18,13 +18,15 @@ import { AutenticacionService } from '../../servicios/autenticacion.service';
 })
 export class ListadoProvComponent implements OnInit {
 
-  mensaje:string='Error de conexión con el servidor';
+  mensaje:string;
   mostrarAlerta:boolean = false;
   proveedores:any;
   id:string;
+  desde:number = 0;
+  totales:number;
 
   constructor(private proveedoresService: ProveedoresService,
-              private autenticacionService:AutenticacionService) { }
+              private autenticacionService: AutenticacionService) { }
 
   ngOnInit() {
     this.cargarProveedores();
@@ -35,35 +37,53 @@ export class ListadoProvComponent implements OnInit {
   }
 
   cargarProveedores(){
-    this.proveedoresService.getProveedores()
-        .subscribe((resp:any)=>{
-          this.proveedores=resp.proveedores;
-          console.log(this.proveedores);
-    }, error =>{
-      console.log(error);
-    });
+    this.proveedoresService.getProveedores(this.desde)
+               .subscribe((resp:any)=>{
+                 this.totales = resp.totales;
+                  this.proveedores = resp.proveedores;
+               }, error => {
+                 console.log(error);
+               })
   }
 
-  obtenerId(id){ //En este metodo nos va a permitir sacar el id del proveedor cuando le demos al primer boton de borrar
+  setDesde(valor){
+    var desde = this.desde + valor;
+    if(desde >= this.totales){
+      return;
+    } else if(desde < 0){
+      return;
+    }else{
+      this.desde += valor;
+      this.cargarProveedores();
+    }
+  }
+
+  obtenerId(id){
     this.id = id;
   }
 
-  borrarProveedor(){ //Y en este método ya tendremos el id, por eso ponemos this.id. Esto es porque pierde el DOM y borraría el proveedor de arriba.
+  borrarProveedor(){
     this.proveedoresService.deleteProveedor(this.id)
-                           .subscribe((resp:any)=>{
-                            this.mensaje= "El proveedor ha sido eliminado correctamente";
-                            this.mostrarAlerta = true;
-                            this.cargarProveedores()
-                            setTimeout(()=>{
-                              this.mostrarAlerta=false;
-                            },2500);
-                           },(error:any)=>{
-                            this.mensaje='Error de conexión con el servidor';
-                            this.mostrarAlerta=true;
-                            setTimeout(()=>{
-                              this.mostrarAlerta=false;
-                            },2500);
-                           });
+                .subscribe((resp:any)=>{
+                  this.mensaje = "El proveedor ha sido eliminado correctamente";
+                  this.mostrarAlerta = true;
+                  this.cargarProveedores();
+                  setTimeout(()=>{
+                      this.mostrarAlerta = false;
+                  }, 2500);
+                },(error:any)=>{
+                  if(error.error.mensaje === 'token incorrecto'){
+                    this.mensaje = 'Su sesión ha caduado, reinicie sesión.'
+                  }
+                  this.mostrarAlerta = true;
+                  setTimeout(()=>{
+                    this.mostrarAlerta = false;
+                  }, 2500);
+                })
+
+                setTimeout(()=>{
+                  this.mensaje = 'Error de conexión con el servidor'
+                });
   }
 
 }
