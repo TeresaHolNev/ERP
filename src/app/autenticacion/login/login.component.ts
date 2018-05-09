@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators} from '@angular/forms';
 import { AutenticacionService } from '../../servicios/autenticacion.service';
-import { SesionService } from '../../servicios/sesion.service';
 import { Router } from '@angular/router';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 
@@ -29,8 +28,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private fl: FormBuilder,
               private autenticacionService: AutenticacionService,
-              private router: Router,
-              private sesionService: SesionService) { }
+              private router: Router) { }
 
   ngOnInit() {
     this.loginForm = this.fl.group({
@@ -74,12 +72,12 @@ export class LoginComponent implements OnInit {
       nombre: this.autenticacionService.nombre,
       login: new Date()
     }
-    this.sesionService.postSesion(this.sesion)
-          .subscribe((resp:any)=>{
-            console.log(resp);
-          },(error)=>{
-            console.log(error);
-          })
+    this.autenticacionService.postSesion(this.sesion)
+                  .subscribe((resp:any)=>{
+                    console.log(resp);
+                  },(error)=>{
+                    console.log(error);
+                  })
   }
 
 }

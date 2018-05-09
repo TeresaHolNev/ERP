@@ -7,6 +7,10 @@
         routerLink="/listado-presupuestos">
       <i class="fas fa-money-bill-alt"></i>
   </div>
+  <div title="Articulos" 
+      routerLink="/listado-articulos">
+    <i class="fas fa-archive"></i>
+  </div>
 </div>
 <div class="col-md-12">
   <nav aria-label="breadcrumb">
@@ -19,63 +23,81 @@
 </div>
 <div class="col-md-12 titulo">
   <span>Clientes</span>
-  <span class="alert alert-warning"
-        [@alerta]="estadoAlerta">{{mensaje}}</span>
   <button class="btn btn-primary"
           routerLink="/crear-cliente">
       <i class="fas fa-plus-circle"></i>
   </button>
 </div>
 <div class="col-md-12">
-  <table class="table">
-    <tr>
-      <th>Nombre</th>
-      <th>CIF</th>
-      <th>Localidad</th>
-      <th></th>
-    </tr>
-    <tr *ngFor="let cliente of clientes">
-      <td>{{cliente.nombre}}</td>
-      <td>{{cliente.cif}}</td>
-      <td>{{cliente.localidad}}</td>
-      <td>
-        <button class="btn btn-success"
-         routerLink="/editar-cliente/{{cliente._id}}">
-         <i class="fas fa-pen-square"></i>
+  <div class="custom-control custom-radio custom-control-inline">
+    <input type="radio" id="customRadioInline1" class="custom-control-input"
+            name="customRadioInline1" 
+            (click)="buscarPorNombre()" checked>
+    <label class="custom-control-label" for="customRadioInline1">
+      Buscar por nombre
+    </label>
+  </div>
+  <div class="custom-control custom-radio custom-control-inline">
+    <input type="radio" id="customRadioInline2" class="custom-control-input"
+            name="customRadioInline1" 
+            (click)="buscarPorLocalidad()">
+    <label class="custom-control-label" for="customRadioInline2">
+      Buscar por localidad
+    </label>
+  </div>
+  <div class="custom-control custom-radio custom-control-inline">
+    <input type="radio" id="customRadioInline3" class="custom-control-input"
+            name="customRadioInline1" 
+            (click)="buscarPorLocalidadNombre()">
+    <label class="custom-control-label" for="customRadioInline3">
+      Buscar por nombre y localidad
+    </label>
+  </div>
+</div>
+<div class="col-md-12 buscador" *ngIf="verBuscadorNombre">
+  <input type="search" class="form-control"
+         placeholder="Complete el nombre"
+         [formControl]="buscador">
+</div>
+<div class="col-md-12 buscador" *ngIf="verBuscadorLocalidad">
+  <input type="search" class="form-control"
+          placeholder="Complete la localidad"
+          [formControl]="buscadorLocalidad">
+</div>
+<div class="col-md-12 buscador" *ngIf="verBuscadorNombreLocalidad">
+  <form [formGroup]="buscadorLocalidadNombre"
+        (ngSubmit)="crearConsulta()">
+    <div class="form-row">
+      <div class="col">
+          <input type="text" class="form-control"
+                 placeholder="Nombre"
+                 formControlName="nombre">
+      </div>
+      <div class="col">
+          <input type="text" class="form-control"
+                 placeholder="Localidad"
+                 formControlName="localidad">
+      </div>
+      <div class="col">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-search"></i>
         </button>
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-danger" 
-                data-toggle="modal" data-target="#exampleModal"
-                (click)="obtenerId(cliente._id)">
-          <i class="fas fa-trash-alt"></i>
-        </button>
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">
-                  <i class="fas fa-exclamation-triangle"></i>
-                </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                ¿Está seguro de eliminar el cliente?
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal"
-                        (click)="borrarCliente()">
-                  Aceptar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </td>
-    </tr>
-  </table>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="col-md-12 resultados">
+  <div *ngIf="buscando" class="spinner">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+  </div>
+  <p *ngFor="let cliente of clientes"
+     routerLink="/editar-cliente/{{cliente._id}}">
+     {{cliente.nombre}} | {{cliente.localidad}}
+  </p>
+  <span *ngIf="mensaje">No se encontraron coincidencias.</span>
 </div>
 

@@ -12,9 +12,7 @@ export class ProveedoresService {
   token:string;
 
   constructor(private http: HttpClient,
-              private autenticacionService: AutenticacionService) { 
-                this.token = autenticacionService.token;
-              }
+              private autenticacionService: AutenticacionService) { }
 
   getProveedores(desde){
     let url = 'http://localhost:3000/proveedor?desde=' + desde;

@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class AutenticacionService {
-  id: string;
 
   token:string;
   nombre:string;
@@ -18,6 +17,8 @@ export class AutenticacionService {
   constructor(private http: HttpClient,
               private router: Router) {
     this.cargarCredenciales();
+    this.cargarInicioSesion();
+    console.log(this.ultimoLogin);
    }
 
   getUsuarios(){
@@ -58,7 +59,7 @@ export class AutenticacionService {
     return this.http.post(url, usuario)
                   .map( (resp:any) => {
                     this.guardarCredenciales(resp.token, resp.nombre, resp.rol);
-                    this.ultimoLogin = new Date();
+                    this.guardarInicioSesion();
                     return resp;
                   });
   }
@@ -72,16 +73,29 @@ export class AutenticacionService {
     this.rol = rol;
   }
 
+  guardarInicioSesion(){
+    var inicioSesion = new Date();
+    localStorage.setItem('ultimoLogin', JSON.stringify(inicioSesion));
+    this.ultimoLogin = inicioSesion;
+  }
+
   cargarCredenciales(){
     if(localStorage.getItem('token')){
       this.token = localStorage.getItem('token');
       this.nombre = localStorage.getItem('nombre');
       this.rol = localStorage.getItem('rol');
-      this.id = localStorage.getItem('id');
     } else {
       this.token = '';
       this.nombre = '';
       this.rol = '';
+    }
+  }
+
+  cargarInicioSesion(){
+    if(localStorage.getItem('ultimoLogin')){
+      this.ultimoLogin = JSON.parse( localStorage.getItem('ultimoLogin'));
+    } else {
+      this.ultimoLogin = '';
     }
   }
 
@@ -94,9 +108,11 @@ export class AutenticacionService {
     localStorage.removeItem('nombre');
     localStorage.removeItem('rol');
     localStorage.removeItem('id');
+    localStorage.removeItem('ultimoLogin');
     this.token = '';
     this.nombre = '';
     this.rol = '';
+    this.ultimoLogin = '';
     this.router.navigate(['/']);
   }
 
@@ -125,6 +141,22 @@ export class AutenticacionService {
     } else {
       return false;
     }
+  }
+
+  getSesiones(nombre){
+    let url = 'http://localhost:3000/sesion?nombre='+nombre;
+    return this.http.get(url)
+                  .map( (resp:any) => {
+                    return resp;
+                  });
+  }
+
+  postSesion(sesion){
+    let url = "http://localhost:3000/sesion";
+    return this.http.post(url, sesion)
+                  .map( (resp:any) => {
+                    return resp;
+                  });
   }
 
 

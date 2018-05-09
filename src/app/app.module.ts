@@ -31,14 +31,17 @@ import { CrearPresComponent } from './presupuestos/crear-pres/crear-pres.compone
 import { EditarPresComponent } from './presupuestos/editar-pres/editar-pres.component';
 import { AutenticacionGuard } from './servicios/autenticacion.guard';
 import { ListadoUsuariosComponent } from './autenticacion/listado-usuarios/listado-usuarios.component';
-import { SesionComponent } from './autenticacion/sesion/sesion.component';
-import { SesionService } from './servicios/sesion.service';
+import { ListadoSesionesComponent } from './autenticacion/listado-sesiones/listado-sesiones.component';
+import { CrearArticuloComponent } from './articulos/crear-articulo/crear-articulo.component';
+import { ListadoArticulosComponent } from './articulos/listado-articulos/listado-articulos.component';
+import { ArticulosService } from './servicios/articulos.service';
 
 const rutas:Routes = [
   {path:'' , component: InicioComponent},
   {path:'registro', component: RegistroComponent},
   {path:'inicio-sesion', component: LoginComponent},
   {path:'listado-usuarios', component: ListadoUsuariosComponent, canActivate: [AutenticacionGuard]},
+  {path:'listado-sesiones/:nombre', component: ListadoSesionesComponent, canActivate: [AutenticacionGuard]},
   {path:'compras', component: ComprasComponent, canActivate: [AutenticacionGuard]},
   {path: 'listado-proveedores', component: ListadoProvComponent, canActivate: [AutenticacionGuard]},
   {path: 'crear-proveedor', component: CrearProvComponent, canActivate: [AutenticacionGuard]},
@@ -53,7 +56,8 @@ const rutas:Routes = [
   {path: 'listado-presupuestos', component: ListadoPresComponent, canActivate: [AutenticacionGuard]},
   {path: 'crear-presupuesto', component: CrearPresComponent, canActivate: [AutenticacionGuard]},
   {path: 'editar-presupuesto/:id', component: EditarPresComponent, canActivate: [AutenticacionGuard]},
-  {path: 'sesion/:nombre', component: SesionComponent, canActivate: [AutenticacionGuard]},  
+  {path: 'listado-articulos', component: ListadoArticulosComponent, canActivate: [AutenticacionGuard]},
+  {path: 'crear-articulo', component: CrearArticuloComponent, canActivate: [AutenticacionGuard]},
   {path: '**', component: InicioComponent}
 ]
 
@@ -80,7 +84,9 @@ const rutas:Routes = [
     CrearPresComponent,
     EditarPresComponent,
     ListadoUsuariosComponent,
-    SesionComponent
+    ListadoSesionesComponent,
+    CrearArticuloComponent,
+    ListadoArticulosComponent
   ],
   imports: [
     BrowserModule,
@@ -95,7 +101,7 @@ const rutas:Routes = [
               ClientesService,
               PresupuestosService,
               AutenticacionGuard,
-              SesionService],
+              ArticulosService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
